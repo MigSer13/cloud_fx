@@ -20,7 +20,8 @@
                                 <Insets />
                         </VBox.margin>
                         <children>
-                                <Button mnemonicParsing="false"  prefHeight="3.0" prefWidth="300.0" text="upload a file to the storage" />
+                                <Button fx:id="upload" mnemonicParsing="false"  prefHeight="3.0" prefWidth="300.0"
+                                        text="upload a file to the storage"/>
                                 <HBox prefHeight="100.0" prefWidth="200.0">
                                         <children>
                                                 <TextField fx:id="fileName" prefHeight="25.0" prefWidth="206.0"

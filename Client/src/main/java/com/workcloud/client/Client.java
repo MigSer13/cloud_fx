@@ -1,4 +1,4 @@
-package com.workcloud;
+package com.workcloud.client;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
