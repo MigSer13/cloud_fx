@@ -22,7 +22,9 @@ public class Server {
                         .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            socketChannel.pipeline().addLast(new Handler());
+                            socketChannel.pipeline().addLast(
+                                    new InHandler()
+                            );
                         }
                     });
             ChannelFuture channelFuture = sb.bind(PORT).sync();
