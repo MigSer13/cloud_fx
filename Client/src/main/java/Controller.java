@@ -13,22 +13,4 @@ public class Controller {
     @FXML
     TextField fileName;
 
-    public void upload(ActionEvent actionEvent){
-    
-    }
-
-    public void mouseClickedListView(MouseEvent mouseEvent) {
-    }
-
-    public void scrollBar(ScrollEvent scrollEvent) {
-    }
-
-    public void download(ActionEvent actionEvent) {
-    }
-
-    public void mouseClickedDownload(MouseEvent mouseEvent) {
-    }
-
-    public void mouseClickedUpload(MouseEvent mouseEvent) {
-    }
 }
