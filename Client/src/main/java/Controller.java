@@ -4,6 +4,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -23,7 +25,7 @@ import java.util.stream.Collectors;
 
 public class Controller implements Initializable {
     private Client client;
-    private String selectedPath = "E:/Example/";
+    private String selectedPath = "E:/Example";
     private File fileinfo;
 
     @FXML
@@ -50,16 +52,31 @@ public class Controller implements Initializable {
     public void mouseClicked(MouseEvent mouseEvent) {
         if(mouseEvent.getClickCount() == 2) {
             String selectedFile = listView.getSelectionModel().getSelectedItem();
-            selectedPath = selectedPath + selectedFile;
-            fileinfo = new File(selectedPath);
+            fileinfo = new File(selectedPath + "/" +  selectedFile);
             if(fileinfo.isDirectory()){
+                selectedPath = selectedPath + "/" +  selectedFile;
                 updateList();
             }
         }
-
     }
 
     public void backButtonClick(ActionEvent actionEvent) {
+        if(fileinfo.getParent() == null){
+            return;
+        }
+        selectedPath = fileinfo.getParent();
+        updateList();
+    }
 
+    public void toServerAction(ActionEvent actionEvent) {
+        if(!fileinfo.isDirectory()) {
+            Client.getChannel().write("upload");
+        }else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "выберите файл, а нек папку", ButtonType.OK);
+            alert.showAndWait();
+        }
+    }
+
+    public void toClientAction(ActionEvent actionEvent) {
     }
 }

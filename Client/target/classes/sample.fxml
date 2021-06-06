@@ -22,15 +22,20 @@
          <children>
             <VBox prefHeight="575.0" prefWidth="600.0">
                <children>
-                  <TextField fx:id="textField" editable="false" style="-fx-border-color: #778899; -fx-background-color: #DEB887;" />
-                  <ListView id="listView" fx:id="listView" onMouseClicked="#mouseClicked" prefHeight="550.0" prefWidth="450.0" style="-fx-background-color: #F0F8FF; -fx-border-color: #778899;" />
+                  <HBox prefHeight="25.0" prefWidth="517.0">
+                     <children>
+                        <Button fx:id="backButton" mnemonicParsing="false" onAction="#backButtonClick" prefHeight="27.0" prefWidth="39.0" text="←" />
+                        <TextField fx:id="textField" editable="false" prefHeight="27.0" prefWidth="495.0" style="-fx-border-color: #778899; -fx-background-color: #DEB887;" />
+                     </children>
+                  </HBox>
+                  <ListView fx:id="listView" onMouseClicked="#mouseClicked" prefHeight="550.0" prefWidth="450.0" style="-fx-background-color: #F0F8FF; -fx-border-color: #778899;" />
                </children>
             </VBox>
             <VBox alignment="CENTER" fillWidth="false" prefHeight="50.0" prefWidth="150.0" style="-fx-border-color: #778899;">
                <children>
-                  <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" text="&gt;" />
+                  <Button fx:id="toServer" contentDisplay="TOP" mnemonicParsing="false" onAction="#toServerAction" prefHeight="50.0" prefWidth="50.0" text="&gt;" />
                   <Pane prefHeight="200.0" prefWidth="200.0" />
-                  <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" text="&lt;" />
+                  <Button fx:id="toClient" mnemonicParsing="false" onAction="#toClientAction" prefHeight="50.0" prefWidth="50.0" text="&lt;" />
                </children>
             </VBox>
             <ListView prefWidth="400.0" style="-fx-background-color: #B0E0E6; -fx-border-color: #778899;">

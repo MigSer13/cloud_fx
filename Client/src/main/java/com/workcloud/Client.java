@@ -13,7 +13,12 @@ import io.netty.handler.codec.string.StringEncoder;
 
 public class Client {
     private static int PORT = 8188;
-    private SocketChannel channel;
+
+    public static SocketChannel getChannel() {
+        return channel;
+    }
+
+    private static SocketChannel channel;
 
     public Client() {
         new Thread(() -> {
@@ -26,7 +31,7 @@ public class Client {
                             @Override
                             protected void initChannel(SocketChannel socketChannel) throws Exception {
                                 channel = socketChannel;
-                                socketChannel.pipeline().addLast(new StringDecoder(), new StringEncoder());
+                                socketChannel.pipeline().addLast(new InClientHandler(), new StringEncoder());
                             }
                         });
                 ChannelFuture channelFuture = b.connect("localhost", PORT).sync();
