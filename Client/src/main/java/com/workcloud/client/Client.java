@@ -12,6 +12,7 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 
 public class Client {
+    private static String ID = "localhost";
     private static int PORT = 8188;
     private SocketChannel channel;
 
@@ -26,10 +27,10 @@ public class Client {
                             @Override
                             protected void initChannel(SocketChannel socketChannel) throws Exception {
                                 channel = socketChannel;
-                                socketChannel.pipeline().addLast(new StringDecoder(), new StringEncoder());
+                                socketChannel.pipeline().addLast(new ClientDecoder(), new ClientHandler());
                             }
                         });
-                ChannelFuture channelFuture = b.connect("localhost", PORT).sync();
+                ChannelFuture channelFuture = b.connect(ID, PORT).sync();
                 channelFuture.channel().closeFuture().sync();
             } catch (Exception e) {
                 e.printStackTrace();

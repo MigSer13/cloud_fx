@@ -1,5 +1,5 @@
 
-import com.workcloud.Client;
+import com.workcloud.client.Client;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 

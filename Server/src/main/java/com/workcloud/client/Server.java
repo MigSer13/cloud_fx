@@ -9,12 +9,11 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 public class Server {
-
     private static int PORT = 8188;
 
     public static void main(String[] args) {
         EventLoopGroup mainGroup = new NioEventLoopGroup(1);
-        EventLoopGroup workGroup = new NioEventLoopGroup();
+        EventLoopGroup workGroup = new NioEventLoopGroup(); 
         try {
             ServerBootstrap sb = new ServerBootstrap();
             sb.group(mainGroup, workGroup)
