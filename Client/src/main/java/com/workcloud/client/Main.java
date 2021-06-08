@@ -10,18 +10,16 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("/client.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/aufh.fxml"));
         primaryStage.setTitle("Storage");
-        primaryStage.setScene(new Scene(root, 300, 400));
+        primaryStage.setScene(new Scene(root, 300, 150));
         primaryStage.show();
-        System.out.println("Запуск приложения");
-        new Client();
+
     }
 
 
     public static void main(String[] args) {
         launch(args);
     }
-
 
 }
