@@ -1,5 +1,6 @@
-package com.workcloud;
+package com.workcloud.client;
 
+import com.workcloud.InHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -10,12 +11,11 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.stream.ChunkedWriteHandler;
 
 public class Server {
-
     private static int PORT = 8188;
 
     public static void main(String[] args) {
         EventLoopGroup mainGroup = new NioEventLoopGroup(1);
-        EventLoopGroup workGroup = new NioEventLoopGroup();
+        EventLoopGroup workGroup = new NioEventLoopGroup(); 
         try {
             ServerBootstrap sb = new ServerBootstrap();
             sb.group(mainGroup, workGroup)
