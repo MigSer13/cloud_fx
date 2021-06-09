@@ -39,6 +39,7 @@ public class Controller implements Initializable {
             fileinfo = new File(selectedPath);
             listView.getItems().addAll(fileinfo.list());
             textField.setText(selectedPath);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
