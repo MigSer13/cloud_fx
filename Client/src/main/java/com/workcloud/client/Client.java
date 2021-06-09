@@ -8,18 +8,23 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.string.StringEncoder;
+import javafx.scene.Scene;
+import javafx.stage.Window;
+
 
 public class Client {
     private static String ID = "localhost";
     private static int PORT = 8188;
+    private static SocketChannel channel;
+    private Callback messageFromServer;
+    private Window currentWindow;
 
     public static SocketChannel getChannel() {
         return channel;
     }
 
-    private static SocketChannel channel;
+    public Client(Window currentWindow) {
 
-    public Client() {
         new Thread(() -> {
             EventLoopGroup workGroup = new NioEventLoopGroup();
             try {
@@ -30,7 +35,7 @@ public class Client {
                             @Override
                             protected void initChannel(SocketChannel socketChannel) throws Exception {
                                 channel = socketChannel;
-                                socketChannel.pipeline().addLast(new InClientHandler(), new StringEncoder());
+                                socketChannel.pipeline().addLast(new OutClientHandler(), new InClientHandler(currentWindow));
                             }
                         });
                 ChannelFuture channelFuture = b.connect(ID, PORT).sync();

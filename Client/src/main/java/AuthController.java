@@ -6,6 +6,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -16,33 +18,26 @@ public class AuthController implements Initializable {
 
     @FXML
     public Button buttonsignIn;
+    @FXML
+    public TextField textFieldLogin;
+    @FXML
+    public PasswordField passwordField;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        //new Client(buttonsignIn.getScene().getWindow());
     }
 
     public void signInAction(ActionEvent actionEvent) {
-        //if( authok){
-        buttonsignIn.getScene().getWindow().hide();
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/client.fxml"));
-
-        try {
-            loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Parent root = loader.getRoot();
-        Stage stage = new Stage();
-        stage.setTitle("Storage");
-        stage.setScene(new Scene(root));
-        //stage.getScene();
-        stage.showAndWait();
-        //}
+        String login = textFieldLogin.getText().trim();
+        String password = passwordField.getText().trim();
+        Client.getChannel().write("auth "+login + " " + password);
     }
 
     public void registrationAction(ActionEvent actionEvent) {
         //зарегистрировать нового пользователя
     }
+
+
+
 }
