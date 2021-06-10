@@ -24,7 +24,7 @@ public class InClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         System.out.println("Клиент подключился");
-        this.currentWindow = currentWindow;
+        //this.currentWindow = currentWindow;
     }
 
     @Override

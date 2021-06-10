@@ -29,15 +29,21 @@ public class AuthController implements Initializable {
     }
 
     public void signInAction(ActionEvent actionEvent) {
-        String login = textFieldLogin.getText().trim();
-        String password = passwordField.getText().trim();
-        Client.getChannel().write("auth "+login + " " + password);
+        Client client = new Client(buttonsignIn.getScene().getWindow());
+        try {
+            Thread.sleep(5000);
+            String login = textFieldLogin.getText().trim();
+            String password = passwordField.getText().trim();
+            client.getChannel().writeAndFlush("auth " + login + " " + password);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void registrationAction(ActionEvent actionEvent) {
         //зарегистрировать нового пользователя
+        Client.getChannel().writeAndFlush("hi");
     }
-
 
 
 }

@@ -1,0 +1,5 @@
+com\workcloud\server\Server$1.class
+com\workcloud\server\Server.class
+com\workcloud\server\InHandlerAdapterServer.class
+com\workcloud\server\OutHandlerAdapterServer.class
+com\workcloud\server\Handler.class

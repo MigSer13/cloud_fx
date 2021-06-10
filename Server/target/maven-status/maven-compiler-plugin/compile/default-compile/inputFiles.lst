@@ -1,5 +1,7 @@
 D:\разное\Java\workcloud\Server\src\main\java\com\workcloud\InHandler.java
-D:\разное\Java\workcloud\Server\src\main\java\com\workcloud\client\Server.java
+D:\разное\Java\workcloud\Server\src\main\java\com\workcloud\server\Handler.java
+D:\разное\Java\workcloud\Server\src\main\java\com\workcloud\server\OutHandlerAdapterServer.java
+D:\разное\Java\workcloud\Server\src\main\java\com\workcloud\server\InHandlerAdapterServer.java
 D:\разное\Java\workcloud\Server\src\main\java\com\workcloud\OutHandler.java
-D:\разное\Java\workcloud\Server\src\main\java\com\workcloud\client\Handler.java
+D:\разное\Java\workcloud\Server\src\main\java\com\workcloud\server\Server.java
 D:\разное\Java\workcloud\Server\src\main\java\com\workcloud\TypeAction.java

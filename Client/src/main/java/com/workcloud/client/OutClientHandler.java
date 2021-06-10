@@ -8,9 +8,9 @@ import io.netty.channel.ChannelPromise;
 public class OutClientHandler extends ChannelOutboundHandlerAdapter {
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-       ctx.alloc().buffer(1);
-       ByteBuf buf = (ByteBuf)msg;
-       ctx.writeAndFlush(buf.readBytes(1));
-        buf.release();
+       ByteBuf buf = ctx.alloc().directBuffer();
+       String s = (String)msg;
+       ctx.writeAndFlush(s.getBytes());
+       //buf.release();
     }
 }
