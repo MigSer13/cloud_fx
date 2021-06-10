@@ -2,15 +2,18 @@ package com.workcloud;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.ByteToMessageDecoder;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class InHandler extends ByteToMessageDecoder {
     private TypeAction typeAction = TypeAction.WAITING;
     private String fileName = "";
     private int fileSize = 0;
+    private final String pathStorage = "Files/";
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -26,7 +29,7 @@ public class InHandler extends ByteToMessageDecoder {
                 stringBuilder.append((char) buf.readByte());
             }
             if (stringBuilder.toString().trim().equalsIgnoreCase("upload")) {
-                channel_ctx.fireChannelRead("filename");
+                channel_ctx.write("filename");
                 typeAction = TypeAction.GET_FILENAME;
             }
             byteBufIn.release();
@@ -39,20 +42,25 @@ public class InHandler extends ByteToMessageDecoder {
                 stringBuilder.append((char) buf.readByte());
             }
             fileName = stringBuilder.toString().trim();
-            channel_ctx.fireChannelRead("filesize");
+            channel_ctx.write("filesize");
             typeAction = TypeAction.GET_FILESIZE;
             byteBufIn.release();
         }
 
         if (typeAction == TypeAction.GET_FILESIZE || byteBufIn.readableBytes() > 4) {
             ByteBuf buf = byteBufIn.readBytes(4);
-//            StringBuilder stringBuilder = new StringBuilder();
-//            while (buf.isReadable()) {
-//                stringBuilder.append((char) buf.readByte());
-//            }
-            //fileSize = ;
-            channel_ctx.fireChannelRead("upload");
+            fileSize = buf.readInt();
+            channel_ctx.write("upload");
             typeAction = TypeAction.UPLOAD;
+            byteBufIn.release();
+        }
+
+        if (typeAction == TypeAction.UPLOAD || byteBufIn.readableBytes() > fileSize) {
+            ByteBuf buf = byteBufIn.readBytes(fileSize);
+            Path path = Paths.get(pathStorage + fileName);
+            Files.write(path, buf.array());
+            //добавить в List и отправить список на клиента
+            typeAction = TypeAction.WAITING;
             byteBufIn.release();
         }
 

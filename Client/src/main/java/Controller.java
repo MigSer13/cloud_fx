@@ -1,34 +1,74 @@
 
-import com.workcloud.Client;
+import com.workcloud.client.Client;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-
+import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
+import java.io.File;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class Controller {
+
+public class Controller implements Initializable {
     private Client client;
+    private String selectedPath = "D:/";
+    private File fileinfo;
 
     @FXML
-    TextField fileName;
+    TextField textField;
+    @FXML
+    ListView<String> listView;
 
-    public void upload(ActionEvent actionEvent){
-    
+    public void updateList() {
+        try {
+            listView.getItems().clear();
+            fileinfo = new File(selectedPath);
+            listView.getItems().addAll(fileinfo.list());
+            textField.setText(selectedPath);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public void mouseClickedListView(MouseEvent mouseEvent) {
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        System.out.println("Запуск приложения");
+        //new Client();
+        updateList();
     }
 
-    public void scrollBar(ScrollEvent scrollEvent) {
+    public void mouseClicked(MouseEvent mouseEvent) {
+        if(mouseEvent.getClickCount() == 2) {
+            String selectedFile = listView.getSelectionModel().getSelectedItem();
+            fileinfo = new File(selectedPath + "/" +  selectedFile);
+            if(fileinfo.isDirectory()){
+                selectedPath = selectedPath + "/" +  selectedFile;
+                updateList();
+            }
+        }
     }
 
-    public void download(ActionEvent actionEvent) {
+    public void backButtonClick(ActionEvent actionEvent) {
+        if(fileinfo.getParent() == null){
+            return;
+        }
+        selectedPath = fileinfo.getParent();
+        updateList();
     }
 
-    public void mouseClickedDownload(MouseEvent mouseEvent) {
+    public void toServerAction(ActionEvent actionEvent) {
+        if(!fileinfo.isDirectory()) {
+            Client.getChannel().write("upload");
+        }else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "выберите файл, а нек папку", ButtonType.OK);
+            alert.showAndWait();
+        }
     }
 
-    public void mouseClickedUpload(MouseEvent mouseEvent) {
+    public void toClientAction(ActionEvent actionEvent) {
     }
 }

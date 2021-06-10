@@ -1,4 +1,4 @@
-package com.workcloud;
+package com.workcloud.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -9,12 +9,11 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 public class Server {
-
-    private static int PORT = 8188;
+    private static int PORT = 8187;
 
     public static void main(String[] args) {
         EventLoopGroup mainGroup = new NioEventLoopGroup(1);
-        EventLoopGroup workGroup = new NioEventLoopGroup();
+        EventLoopGroup workGroup = new NioEventLoopGroup(); 
         try {
             ServerBootstrap sb = new ServerBootstrap();
             sb.group(mainGroup, workGroup)
@@ -23,7 +22,8 @@ public class Server {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             socketChannel.pipeline().addLast(
-                                    new InHandler()
+                                    new OutHandlerAdapterServer(),
+                                    new InHandlerAdapterServer()
                             );
                         }
                     });
