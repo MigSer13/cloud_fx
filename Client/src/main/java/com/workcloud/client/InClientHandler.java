@@ -10,21 +10,17 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class InClientHandler extends ChannelInboundHandlerAdapter {
     private ByteBuf buf;
-    private boolean authok;
+    private boolean authok = false;
     private Window currentWindow = null;
-
-    public InClientHandler(Window currentWindow) {
-        this.currentWindow = currentWindow;
-    }
 
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         System.out.println("Клиент подключился");
-        this.currentWindow = currentWindow;
     }
 
     @Override
@@ -34,19 +30,21 @@ public class InClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+
         openWorkingWindow();
 
-        if ( !authok ) {
-            ByteBuf buf = (ByteBuf) msg;
-            StringBuilder stringBuilder = new StringBuilder();
-            while (buf.readableBytes() > 0) {
-                stringBuilder.append((char) buf.readByte());
-            }
-            String answerServer = stringBuilder.toString();
-            if (answerServer.equals("authok")) {
-                openWorkingWindow();
-            }
-        }
+//        if ( !authok ) {
+//            ByteBuf buf = (ByteBuf) msg;
+//            StringBuilder stringBuilder = new StringBuilder();
+//            while (buf.readableBytes() > 0) {
+//                stringBuilder.append((char) buf.readByte());
+//            }
+//            String answerServer = stringBuilder.toString();
+////            if (answerServer.equals("authok")) {
+////                openWorkingWindow();
+////            }
+//            ctx.write(answerServer.getBytes(StandardCharsets.UTF_8));
+//        }
     }
 
     @Override

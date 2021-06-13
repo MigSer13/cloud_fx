@@ -16,6 +16,7 @@ public class Client {
     private static String ID = "localhost";
     private static int PORT = 8188;
     private static SocketChannel channel;
+    public static OutClientHandler outClientHandler = null;
     private Callback messageFromServer;
     private Window currentWindow;
 
@@ -23,7 +24,7 @@ public class Client {
         return channel;
     }
 
-    public Client(Window currentWindow) {
+    public Client() {
 
         new Thread(() -> {
             EventLoopGroup workGroup = new NioEventLoopGroup();
@@ -35,7 +36,10 @@ public class Client {
                             @Override
                             protected void initChannel(SocketChannel socketChannel) throws Exception {
                                 channel = socketChannel;
-                                socketChannel.pipeline().addLast(new OutClientHandler(), new InClientHandler(currentWindow));
+                                socketChannel.pipeline().addLast(
+                                        new OutClientHandler(),
+                                        new InClientHandler()
+                                );
                             }
                         });
                 ChannelFuture channelFuture = b.connect(ID, PORT).sync();

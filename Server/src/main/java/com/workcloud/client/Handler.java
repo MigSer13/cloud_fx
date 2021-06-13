@@ -1,5 +1,6 @@
 package com.workcloud.client;
 
+import com.workcloud.TypeAction;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -12,14 +13,7 @@ public class Handler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ByteBuf buf = (ByteBuf)msg;
-        while (buf.readableBytes() > 0){
-            System.out.print((char)buf.readByte());
-        }
-        System.out.println();
-        buf.release();
-
-        ctx.writeAndFlush("ваше сообщение: " + msg);
+        ctx.write("filename");
     }
 
     @Override

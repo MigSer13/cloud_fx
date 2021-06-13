@@ -15,6 +15,7 @@ public class OutHandler extends ChannelOutboundHandlerAdapter {
         String s = (String) msg;
         ByteBuf buf = ctx.alloc().directBuffer();
         //buf.writableBytes(s.getBytes(StandardCharsets.UTF_8));
+        buf.writeBytes(s.getBytes(StandardCharsets.UTF_8));
         ctx.writeAndFlush(buf);
     }
 }

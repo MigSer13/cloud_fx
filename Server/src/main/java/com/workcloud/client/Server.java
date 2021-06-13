@@ -1,6 +1,7 @@
 package com.workcloud.client;
 
 import com.workcloud.InHandler;
+import com.workcloud.OutHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -24,7 +25,8 @@ public class Server {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             socketChannel.pipeline().addLast(
-                                    new InHandler()
+                                    new OutHandler(),
+                                    new InHandlerServer()
                             );
                         }
                     });

@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.io.IOException;
 import java.net.URL;
@@ -25,19 +26,21 @@ public class AuthController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //new Client(buttonsignIn.getScene().getWindow());
+        new Client();
     }
 
-    public void signInAction(ActionEvent actionEvent) {
+    public void signInAction(ActionEvent actionEvent) throws Exception {
+        // Window curWindow = buttonsignIn.getScene().getWindow();
+        //new Client();
+        //Thread.sleep(5000);
         String login = textFieldLogin.getText().trim();
         String password = passwordField.getText().trim();
-        Client.getChannel().write("auth "+login + " " + password);
+        Client.getChannel().writeAndFlush("auth " + login + " " + password);
     }
 
     public void registrationAction(ActionEvent actionEvent) {
         //зарегистрировать нового пользователя
     }
-
 
 
 }
