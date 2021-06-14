@@ -1,4 +1,6 @@
+com\workcloud\client\InClientHandler$1.class
+com\workcloud\client\OutClientHandler.class
+com\workcloud\client\NewWindow.class
 com\workcloud\client\InClientHandler.class
 com\workcloud\client\Callback.class
-com\workcloud\client\OutClientHandler.class
 Controller.class

@@ -1,1 +1,4 @@
-com\workcloud\client\InHandlerServer.class
+com\workcloud\server\InHandlerServer.class
+com\workcloud\server\OutHandlerServer.class
+com\workcloud\server\Server$1.class
+com\workcloud\server\Server.class

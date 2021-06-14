@@ -17,6 +17,7 @@ import java.util.ResourceBundle;
 
 public class AuthController implements Initializable {
 
+    private Client client;
     @FXML
     public Button buttonsignIn;
     @FXML
@@ -26,7 +27,7 @@ public class AuthController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        new Client();
+        client = new Client();
     }
 
     public void signInAction(ActionEvent actionEvent) throws Exception {
@@ -35,7 +36,8 @@ public class AuthController implements Initializable {
         //Thread.sleep(5000);
         String login = textFieldLogin.getText().trim();
         String password = passwordField.getText().trim();
-        Client.getChannel().writeAndFlush("auth " + login + " " + password);
+        //Client.getChannel().writeAndFlush("auth " + login + " " + password);
+        client.getChannel().writeAndFlush(login);
     }
 
     public void registrationAction(ActionEvent actionEvent) {

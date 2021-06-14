@@ -1,4 +1,4 @@
-package com.workcloud;
+package com.workcloud.server;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -9,12 +9,11 @@ import io.netty.channel.ChannelPromise;
 import java.nio.charset.StandardCharsets;
 
 
-public class OutHandler extends ChannelOutboundHandlerAdapter {
+public class OutHandlerServer extends ChannelOutboundHandlerAdapter {
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise channelPromise) throws Exception {
+        ByteBuf buf = ctx.alloc().directBuffer(4);
         String s = (String) msg;
-        ByteBuf buf = ctx.alloc().directBuffer();
-        //buf.writableBytes(s.getBytes(StandardCharsets.UTF_8));
         buf.writeBytes(s.getBytes(StandardCharsets.UTF_8));
         ctx.writeAndFlush(buf);
     }

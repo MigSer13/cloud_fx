@@ -1,7 +1,5 @@
-package com.workcloud.client;
+package com.workcloud.server;
 
-import com.workcloud.InHandler;
-import com.workcloud.OutHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -9,7 +7,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.stream.ChunkedWriteHandler;
 
 public class Server {
     private static int PORT = 8188;
@@ -25,7 +22,7 @@ public class Server {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             socketChannel.pipeline().addLast(
-                                    new OutHandler(),
+                                    new OutHandlerServer(),
                                     new InHandlerServer()
                             );
                         }

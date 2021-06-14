@@ -38,8 +38,7 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("Запуск приложения");
-        //new Client();
-        updateList();
+        //updateList();
     }
 
     public void mouseClicked(MouseEvent mouseEvent) {
@@ -63,7 +62,7 @@ public class Controller implements Initializable {
 
     public void toServerAction(ActionEvent actionEvent) {
         if(!fileinfo.isDirectory()) {
-            Client.getChannel().write("upload");
+            client.getChannel().write("upload");
         }else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "выберите файл, а нек папку", ButtonType.OK);
             alert.showAndWait();
