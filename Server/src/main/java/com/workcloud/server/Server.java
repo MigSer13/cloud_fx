@@ -16,7 +16,8 @@ import java.util.HashMap;
 
 public class Server {
     private static int PORT = 8187;
-    private static String pathlistUsers = "D:/разное/Java/workcloud/Server/src/main/resources/usersData.txt";
+    //private static String pathlistUsers = "D:/разное/Java/workcloud/Server/src/main/resources/usersData.txt";
+    private static String pathlistUsers = "E:/Java/java5_Cloud/cloud_fx/Server/src/main/resources/usersData.txt";
     private static HashMap<String, String> users = null;
 
     public static HashMap<String, String> getUsers() {
@@ -53,8 +54,8 @@ public class Server {
     }
 
     private static void getUsersData() {
+        users = new HashMap<>();
         File file = new File(pathlistUsers);
-
         try {
             BufferedReader bufreader = new BufferedReader(new FileReader(file));
             String line = bufreader.readLine();

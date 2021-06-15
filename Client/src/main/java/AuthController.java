@@ -23,7 +23,6 @@ public class AuthController implements Initializable {
         client = new Client(buttonsignIn);
     }
 
-
     public void signInAction(ActionEvent actionEvent) throws Exception {
         //Thread.sleep(5000);
         String login = textFieldLogin.getText().trim();

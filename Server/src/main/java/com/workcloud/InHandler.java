@@ -30,12 +30,12 @@ public class InHandler extends ByteToMessageDecoder {
             }
             if (stringBuilder.toString().trim().equalsIgnoreCase("upload")) {
                 channel_ctx.write("filename");
-                typeAction = TypeAction.GET_FILENAME;
+                typeAction = TypeAction.GET_FILENAME_UPLOAD;
             }
             byteBufIn.release();
         }
 
-        if (typeAction == TypeAction.GET_FILENAME || byteBufIn.readableBytes() > 4) {
+        if (typeAction == TypeAction.GET_FILENAME_UPLOAD || byteBufIn.readableBytes() > 4) {
             ByteBuf buf = byteBufIn.readBytes(4);
             StringBuilder stringBuilder = new StringBuilder();
             while (buf.isReadable()) {
@@ -43,11 +43,11 @@ public class InHandler extends ByteToMessageDecoder {
             }
             fileName = stringBuilder.toString().trim();
             channel_ctx.write("filesize");
-            typeAction = TypeAction.GET_FILESIZE;
+            typeAction = TypeAction.GET_FILESIZE_UPLOAD;
             byteBufIn.release();
         }
 
-        if (typeAction == TypeAction.GET_FILESIZE || byteBufIn.readableBytes() > 4) {
+        if (typeAction == TypeAction.GET_FILESIZE_UPLOAD || byteBufIn.readableBytes() > 4) {
             ByteBuf buf = byteBufIn.readBytes(4);
             fileSize = buf.readInt();
             channel_ctx.write("upload");
