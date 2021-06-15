@@ -8,33 +8,72 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
+
 public class Server {
     private static int PORT = 8187;
+    private static String pathlistUsers = "D:/разное/Java/workcloud/Server/src/main/resources/usersData.txt";
+    private static HashMap<String, String> users = null;
+
+    public static HashMap<String, String> getUsers() {
+        return users;
+    }
 
     public static void main(String[] args) {
         EventLoopGroup mainGroup = new NioEventLoopGroup(1);
-        EventLoopGroup workGroup = new NioEventLoopGroup(); 
+        EventLoopGroup workGroup = new NioEventLoopGroup();
+        getUsersData();
         try {
             ServerBootstrap sb = new ServerBootstrap();
             sb.group(mainGroup, workGroup)
                     .channel(NioServerSocketChannel.class)
-                        .childHandler(new ChannelInitializer<SocketChannel>() {
+                    .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             socketChannel.pipeline().addLast(
-                                    new OutHandlerAdapterServer(),
-                                    new InHandlerAdapterServer()
+                                    new OutHandlerServer(),
+                                    new InHandlerServer()
                             );
                         }
                     });
             ChannelFuture channelFuture = sb.bind(PORT).sync();
+
             System.out.println("Сервер запущен");
             channelFuture.channel().closeFuture().sync();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             mainGroup.shutdownGracefully();
             workGroup.shutdownGracefully();
         }
     }
+
+    private static void getUsersData() {
+        File file = new File(pathlistUsers);
+
+        try {
+            BufferedReader bufreader = new BufferedReader(new FileReader(file));
+            String line = bufreader.readLine();
+            while (line != null) {
+                String[] str = line.split(" ");
+                String login = str[0];
+                String password = str[1];
+                System.out.print(login + " " + password);
+                System.out.println();
+
+                users.put(login, password);
+                line = bufreader.readLine();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
 }

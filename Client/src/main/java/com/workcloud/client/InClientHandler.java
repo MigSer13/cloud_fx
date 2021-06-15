@@ -3,23 +3,27 @@ package com.workcloud.client;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class InClientHandler extends ChannelInboundHandlerAdapter {
     private ByteBuf buf;
-    private boolean authok;
+    private boolean authok = false;
     private Window currentWindow = null;
+    public Button buttonsignIn;
 
-    public InClientHandler(Window currentWindow) {
-        this.currentWindow = currentWindow;
+    public InClientHandler(Button buttonsignIn) {
+        this.buttonsignIn = buttonsignIn;
     }
-
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -34,19 +38,36 @@ public class InClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        openWorkingWindow();
-
-        if ( !authok ) {
-            ByteBuf buf = (ByteBuf) msg;
-            StringBuilder stringBuilder = new StringBuilder();
-            while (buf.readableBytes() > 0) {
-                stringBuilder.append((char) buf.readByte());
-            }
-            String answerServer = stringBuilder.toString();
-            if (answerServer.equals("authok")) {
-                openWorkingWindow();
-            }
+        ByteBuf buf = (ByteBuf) msg;
+        StringBuilder stringBuilder = new StringBuilder();
+        while (buf.isReadable()) {
+            stringBuilder.append((char) buf.readByte());
         }
+        String answerServer = stringBuilder.toString();
+        System.out.println(answerServer);
+
+        if(answerServer.equals("window")){
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    openWorkingWindow();
+                }
+            });
+        }
+
+
+//        if ( !authok ) {
+//            ByteBuf buf = (ByteBuf) msg;
+//            StringBuilder stringBuilder = new StringBuilder();
+//            while (buf.readableBytes() > 0) {
+//                stringBuilder.append((char) buf.readByte());
+//            }
+//            String answerServer = stringBuilder.toString();
+////            if (answerServer.equals("authok")) {
+////                openWorkingWindow();
+////            }
+//            ctx.write(answerServer.getBytes(StandardCharsets.UTF_8));
+//        }
     }
 
     @Override
@@ -57,10 +78,9 @@ public class InClientHandler extends ChannelInboundHandlerAdapter {
 
     public void openWorkingWindow(){
         //if( authok){
-        currentWindow.hide();
+        //currentWindow.hide();
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/client.fxml"));
-
         try {
             loader.load();
         } catch (IOException e) {
@@ -70,6 +90,8 @@ public class InClientHandler extends ChannelInboundHandlerAdapter {
         Stage stage = new Stage();
         stage.setTitle("Storage");
         stage.setScene(new Scene(root));
+        stage.toFront();
+        stage.initModality(Modality.APPLICATION_MODAL);
         stage.showAndWait();
         //}
     }
