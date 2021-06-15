@@ -7,6 +7,8 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
@@ -17,10 +19,16 @@ public class InClientHandler extends ChannelInboundHandlerAdapter {
     private ByteBuf buf;
     private boolean authok = false;
     private Window currentWindow = null;
+    public Button buttonsignIn;
+
+    public InClientHandler(Button buttonsignIn) {
+        this.buttonsignIn = buttonsignIn;
+    }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         System.out.println("Клиент подключился");
+
     }
 
     @Override
@@ -39,14 +47,12 @@ public class InClientHandler extends ChannelInboundHandlerAdapter {
         System.out.println(answerServer);
 
         if(answerServer.equals("window")){
-            //new NewWindow();
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
                     openWorkingWindow();
                 }
             });
-
         }
 
 
@@ -85,6 +91,7 @@ public class InClientHandler extends ChannelInboundHandlerAdapter {
         stage.setTitle("Storage");
         stage.setScene(new Scene(root));
         stage.toFront();
+        stage.initModality(Modality.APPLICATION_MODAL);
         stage.showAndWait();
         //}
     }

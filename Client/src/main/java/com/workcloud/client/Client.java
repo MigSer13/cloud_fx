@@ -7,9 +7,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.string.StringEncoder;
-import javafx.scene.Scene;
-import javafx.stage.Window;
+import javafx.scene.control.Button;
 
 
 public class Client {
@@ -17,14 +15,13 @@ public class Client {
     private static int PORT = 8188;
     private static SocketChannel channel;
     public static OutClientHandler outClientHandler = null;
-    private Callback messageFromServer;
-    private Window currentWindow;
+    private Button buttonsignIn = null;
 
     public static SocketChannel getChannel() {
         return channel;
     }
 
-    public Client() {
+    public Client(Button buttonsignIn) {
 
         new Thread(() -> {
             EventLoopGroup workGroup = new NioEventLoopGroup();
@@ -38,7 +35,7 @@ public class Client {
                                 channel = socketChannel;
                                 socketChannel.pipeline().addLast(
                                         new OutClientHandler(),
-                                        new InClientHandler()
+                                        new InClientHandler(buttonsignIn)
                                 );
                             }
                         });
