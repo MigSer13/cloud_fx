@@ -1,3 +1,4 @@
+package com.workcloud.client;
 
 import com.workcloud.client.Client;
 import javafx.event.ActionEvent;
@@ -64,7 +65,7 @@ public class Controller implements Initializable {
         if(!fileinfo.isDirectory()) {
             client.getChannel().write("upload");
         }else {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "выберите файл, а нек папку", ButtonType.OK);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "выберите файл, а не папку", ButtonType.OK);
             alert.showAndWait();
         }
     }

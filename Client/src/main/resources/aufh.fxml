@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="300.0" style="-fx-background-color: #ADD8E6; -fx-border-radius: 10; -fx-background-radius: 10;" xmlns="http://javafx.com/javafx/8.0.181" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AuthController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="300.0" style="-fx-background-color: #ADD8E6; -fx-border-radius: 10; -fx-background-radius: 10;" xmlns="http://javafx.com/javafx/8.0.181" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.workcloud.client.AuthController">
    <children>
       <Label alignment="CENTER" contentDisplay="TOP" prefHeight="40.0" prefWidth="300.0" text="sign in Storage" textFill="#eb510a">
          <font>

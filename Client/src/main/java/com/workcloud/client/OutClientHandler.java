@@ -1,5 +1,6 @@
 package com.workcloud.client;
 
+import com.workcloud.client.TypeAction;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
@@ -8,18 +9,30 @@ import io.netty.channel.ChannelPromise;
 import java.nio.charset.StandardCharsets;
 
 public class OutClientHandler extends ChannelOutboundHandlerAdapter {
+    private static TypeAction typeAction = TypeAction.WAITING;
+
+    public static void setTypeAction(TypeAction newTypeAction) {
+        typeAction = newTypeAction;
+    }
+
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-
-        //String s = (String) msg;
-//        ByteBuf buf = ctx.alloc().directBuffer(4);
-//        Integer i = (Integer)msg;
-//        //buf.writableBytes(s.getBytes(StandardCharsets.UTF_8));
-//        //buf.writeBytes(s.getBytes(StandardCharsets.UTF_8));
-//        ctx.writeAndFlush(buf);
-        ByteBuf buf = ctx.alloc().directBuffer(4);
-        String s = (String) msg;
-        buf.writeBytes(s.getBytes(StandardCharsets.UTF_8));
-        ctx.writeAndFlush(buf);
+        if (typeAction == TypeAction.WAITING) {
+            ByteBuf buf = ctx.alloc().directBuffer(1);
+            String s = (String) msg;
+            buf.writeBytes(s.getBytes(StandardCharsets.UTF_8));
+            ctx.writeAndFlush(buf);
+        }
+        if (typeAction == TypeAction.SEND_FILENAME) {
+            ByteBuf buf = ctx.alloc().directBuffer(4);
+            String s = (String) msg;
+            buf.writeBytes(s.getBytes(StandardCharsets.UTF_8));
+            ctx.writeAndFlush(buf);
+        }
+        if (typeAction == TypeAction.UPLOAD) {
+            ByteBuf buf = (ByteBuf) msg;
+            buf.writeBytes(buf);
+            ctx.writeAndFlush(buf);
+        }
     }
 }

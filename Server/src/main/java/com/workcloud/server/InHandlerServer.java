@@ -29,7 +29,7 @@ public class InHandlerServer extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ByteBuf byteBufIn = (ByteBuf) msg;
-        if (typeAction == TypeAction.AUTH || byteBufIn.readableBytes() > 4) {
+        if (typeAction == TypeAction.AUTH || byteBufIn.readableBytes() == 4) {
             StringBuilder stringBuilder = new StringBuilder();
             while (byteBufIn.isReadable()) {
                 stringBuilder.append((char) byteBufIn.readByte());
@@ -52,16 +52,15 @@ public class InHandlerServer extends ChannelInboundHandlerAdapter {
                         ctx.write("authNO");
                     }
                 } else {
-                    ctx.write("authRegisterNO");
+                    ctx.write("needRegister");
                 }
             }
         }
 
-        if (typeAction == TypeAction.SEND_FILESIZE_DOWNLOAD || byteBufIn.readableBytes() > 1) {
-            ByteBuf buf = (ByteBuf) msg;
+        if (typeAction == TypeAction.SEND_FILESIZE_DOWNLOAD || byteBufIn.readableBytes() == 1) {
             StringBuilder stringBuilder = new StringBuilder();
-            while (buf.isReadable()) {
-                stringBuilder.append((char) buf.readByte());
+            while (byteBufIn.isReadable()) {
+                stringBuilder.append((char) byteBufIn.readByte());
             }
             String command = stringBuilder.toString();
             if (command.equals("filesizeForDownloadReceived")) {
@@ -75,11 +74,10 @@ public class InHandlerServer extends ChannelInboundHandlerAdapter {
             }
         }
 
-        if (typeAction == TypeAction.WAITING || byteBufIn.readableBytes() > 1) {
-            ByteBuf buf = (ByteBuf) msg;
+        if (typeAction == TypeAction.WAITING || byteBufIn.readableBytes() == 1) {
             StringBuilder stringBuilder = new StringBuilder();
-            while (buf.isReadable()) {
-                stringBuilder.append((char) buf.readByte());
+            while (byteBufIn.isReadable()) {
+                stringBuilder.append((char) byteBufIn.readByte());
             }
             String command = stringBuilder.toString();
             if (command.equals("upload")) {
@@ -91,32 +89,29 @@ public class InHandlerServer extends ChannelInboundHandlerAdapter {
                 //отправить файл клиенту
                 fileDownload = new File(dirUser + "/" + fileNameDownload);
                 long fileSizeDownload = fileDownload.length();
-                ctx.write(fileSizeDownload);
+                ctx.write((int)fileSizeDownload);
                 typeAction = TypeAction.SEND_FILESIZE_DOWNLOAD;
             }
         }
 
-        if (typeAction == TypeAction.GET_FILENAME_UPLOAD || byteBufIn.readableBytes() > 4) {
-            ByteBuf buf = (ByteBuf) msg;
+        if (typeAction == TypeAction.GET_FILENAME_UPLOAD || byteBufIn.readableBytes() == 4) {
             StringBuilder stringBuilder = new StringBuilder();
-            while (buf.isReadable()) {
-                stringBuilder.append((char) buf.readByte());
+            while (byteBufIn.isReadable()) {
+                stringBuilder.append((char) byteBufIn.readByte());
             }
             fileNameUpload = stringBuilder.toString();
             ctx.write("filesize");
             typeAction = TypeAction.GET_FILESIZE_UPLOAD;
         }
 
-        if (typeAction == TypeAction.GET_FILESIZE_UPLOAD || byteBufIn.readableBytes() > 4) {
+        if (typeAction == TypeAction.GET_FILESIZE_UPLOAD || byteBufIn.readableBytes() == 4) {
             //получить размер файла в int
-            Integer fileSizeUploadInteger = (Integer) msg;
-            fileSizeUpload = fileSizeUploadInteger.intValue();
+            fileSizeUpload = byteBufIn.readInt();
             ctx.write("upload");
             typeAction = TypeAction.UPLOAD;
         }
 
-        if (typeAction == TypeAction.UPLOAD || byteBufIn.readableBytes() > fileSizeUpload) {
-            ByteBuf buf = (ByteBuf) msg;
+        if (typeAction == TypeAction.UPLOAD || byteBufIn.readableBytes() == fileSizeUpload) {
             //получить файл
             byte[] bytes = new byte[(int) fileDownload.length()];
             FileInputStream fis = new FileInputStream(fileDownload);

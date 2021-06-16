@@ -11,15 +11,14 @@ import javafx.scene.control.Button;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 public class InClientHandler extends ChannelInboundHandlerAdapter {
-    private ByteBuf buf;
     private boolean authok = false;
     private Window currentWindow = null;
     public Button buttonsignIn;
+    private TypeAction typeAction = TypeAction.WAITING_AUTH;
+    private Controller controller = null;
 
     public InClientHandler(Button buttonsignIn) {
         this.buttonsignIn = buttonsignIn;
@@ -38,23 +37,39 @@ public class InClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ByteBuf buf = (ByteBuf) msg;
-        StringBuilder stringBuilder = new StringBuilder();
-        while (buf.isReadable()) {
-            stringBuilder.append((char) buf.readByte());
-        }
-        String answerServer = stringBuilder.toString();
-        System.out.println(answerServer);
+        ByteBuf byteBufIn = (ByteBuf) msg;
 
-        if(answerServer.equals("window")){
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    openWorkingWindow();
-                }
-            });
+        if (typeAction == TypeAction.WAITING_AUTH || byteBufIn.readableBytes() == 1) {
+            StringBuilder stringBuilder = new StringBuilder();
+            while (byteBufIn.isReadable()) {
+                stringBuilder.append((char) byteBufIn.readByte());
+            }
+            String answerServer = stringBuilder.toString();
+            if (answerServer.equals("authOK")) {
+                typeAction = TypeAction.WAITING;
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        openWorkingWindow();
+                    }
+                });
+            } else if(answerServer.equals("authNO")){
+                System.out.println("Пароль неверный");
+            } else if(answerServer.equals("needRegister")){
+                System.out.println("Пользователь с таким логином не найден");
+            }
         }
 
+        if (typeAction == TypeAction.WAITING || byteBufIn.readableBytes() == 1){
+            StringBuilder stringBuilder = new StringBuilder();
+            while (byteBufIn.readableBytes() > 0) {
+                stringBuilder.append((char) byteBufIn.readByte());
+            }
+            String command = stringBuilder.toString();
+            if (command.equals("filename")) {
+
+            }
+        }
 
 //        if ( !authok ) {
 //            ByteBuf buf = (ByteBuf) msg;
@@ -76,7 +91,7 @@ public class InClientHandler extends ChannelInboundHandlerAdapter {
         ctx.close();
     }
 
-    public void openWorkingWindow(){
+    public void openWorkingWindow() {
         //if( authok){
         //currentWindow.hide();
         FXMLLoader loader = new FXMLLoader();
@@ -93,6 +108,7 @@ public class InClientHandler extends ChannelInboundHandlerAdapter {
         stage.toFront();
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.showAndWait();
+        controller = (Controller)loader.getController();
         //}
     }
 }
