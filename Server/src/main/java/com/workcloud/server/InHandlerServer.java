@@ -7,6 +7,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 public class InHandlerServer extends ChannelInboundHandlerAdapter {
@@ -63,13 +64,14 @@ public class InHandlerServer extends ChannelInboundHandlerAdapter {
                 stringBuilder.append((char) buf.readByte());
             }
             String command = stringBuilder.toString();
-            if (command.equals("download_file_size_received")) {
+            if (command.equals("filesizeForDownloadReceived")) {
                 byte[] bytes = new byte[(int) fileDownload.length()];
                 FileInputStream fis = new FileInputStream(fileDownload);
                 int b = 0;
                 while ((b = fis.read()) != -1) {
                     ctx.write(fis.read());
                 }
+                typeAction = TypeAction.WAITING;
             }
         }
 
@@ -106,9 +108,9 @@ public class InHandlerServer extends ChannelInboundHandlerAdapter {
         }
 
         if (typeAction == TypeAction.GET_FILESIZE_UPLOAD || byteBufIn.readableBytes() > 4) {
-            ByteBuf buf = (ByteBuf) msg;
             //получить размер файла в int
-            //fileSizeUpload =
+            Integer fileSizeUploadInteger = (Integer) msg;
+            fileSizeUpload = fileSizeUploadInteger.intValue();
             ctx.write("upload");
             typeAction = TypeAction.UPLOAD;
         }
@@ -116,7 +118,15 @@ public class InHandlerServer extends ChannelInboundHandlerAdapter {
         if (typeAction == TypeAction.UPLOAD || byteBufIn.readableBytes() > fileSizeUpload) {
             ByteBuf buf = (ByteBuf) msg;
             //получить файл
-            //fileSizeUpload =
+            byte[] bytes = new byte[(int) fileDownload.length()];
+            FileInputStream fis = new FileInputStream(fileDownload);
+            File newFile = new File(pathStorageFiles + "/" + fileNameUpload);
+            FileOutputStream fos = new FileOutputStream(newFile);
+            int b = 0;
+            while ((b = fis.read()) != -1) {
+                fos.write(b);
+            }
+            //обновляем список и отправляем его клиенту
             updateFilesList();
             StringBuilder filenamesListServer = new StringBuilder();
             for (String s : filesList) {
@@ -125,7 +135,6 @@ public class InHandlerServer extends ChannelInboundHandlerAdapter {
             ctx.write("filenamesListServer " + filenamesListServer);
             typeAction = TypeAction.WAITING;
         }
-
 
 //        ByteBuf inBuf = (ByteBuf) msg;
 //        int size = (int)inBuf.readInt();
