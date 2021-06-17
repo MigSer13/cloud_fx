@@ -55,6 +55,13 @@ public class InHandlerServer extends ChannelInboundHandlerAdapter {
                     ctx.write("needRegister");
                 }
             }
+            if (requestAuth.startsWith("registration")) {
+                String[] strAuth = requestAuth.split(" ");
+                String login = strAuth[1];
+                String password = strAuth[2];
+                String answerRegistration = Server.addNewUser(login, password);
+                ctx.write(answerRegistration);
+            }
         }
 
         if (typeAction == TypeAction.SEND_FILESIZE_DOWNLOAD || byteBufIn.readableBytes() == 1) {

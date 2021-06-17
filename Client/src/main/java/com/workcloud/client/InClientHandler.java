@@ -7,26 +7,42 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 public class InClientHandler extends ChannelInboundHandlerAdapter {
+    private static final Logger log = Logger.getLogger(InClientHandler.class.getName());
+
     private boolean authok = false;
-    private Window currentWindow = null;
     public Button buttonsignIn;
-    private TypeAction typeAction = TypeAction.WAITING_AUTH;
+    private static TypeAction typeAction = TypeAction.WAITING_AUTH;
     private Controller controller = null;
     private static String fileName = "";
+    private static String fullFileNameDownload = "";
     private static String fullPathFile = "";
-    private static int filesize = 0;
+    private static int filesizeUpload = 0;
+    private int filesizeDownload = 0;
 
-    public static void setFilesize(int filesize) {
-        InClientHandler.filesize = filesize;
+
+    public static void setFileNameDownload(String fullFileNameDownload) {
+        InClientHandler.fullFileNameDownload = fullFileNameDownload;
+    }
+
+    public static void setTypeAction(TypeAction typeAction) {
+        InClientHandler.typeAction = typeAction;
+    }
+
+    public static void setFilesizeUpload(int filesizeUpload) {
+        InClientHandler.filesizeUpload = filesizeUpload;
     }
 
     public static void setFullPathFile(String fullPathFile) {
@@ -43,13 +59,12 @@ public class InClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("Клиент подключился");
-        //this.currentWindow = currentWindow;
+        log.info("Клиент подключился");
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("Клиент отключился");
+        log.info("Клиент отключился");
     }
 
     @Override
@@ -63,6 +78,7 @@ public class InClientHandler extends ChannelInboundHandlerAdapter {
             }
             String answerServer = stringBuilder.toString();
             if (answerServer.equals("authOK")) {
+                log.info("удачная авторизация клиента");
                 typeAction = TypeAction.WAITING;
                 Platform.runLater(new Runnable() {
                     @Override
@@ -71,9 +87,16 @@ public class InClientHandler extends ChannelInboundHandlerAdapter {
                     }
                 });
             } else if (answerServer.equals("authNO")) {
-                System.out.println("Пароль неверный");
+                log.info("неверный пароль при авторизации");
             } else if (answerServer.equals("needRegister")) {
-                System.out.println("Пользователь с таким логином не найден");
+                log.info("не найден пользователь с указанным логином");
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Пользователь с таким логином не найден", ButtonType.OK);
+            } else if (answerServer.equals("userExist")) {
+                log.info("сообщение при регистрации - пользователь уже существует");
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Пользователь успешно добавлен", ButtonType.OK);
+            }else if (answerServer.equals("registrationOK")) {
+                log.info("добавлен новый пользователь");
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Пользователь успешно добавлен", ButtonType.OK);
             }
         }
 
@@ -88,7 +111,7 @@ public class InClientHandler extends ChannelInboundHandlerAdapter {
                 ctx.write(fileName);
             } else if (command.equals("filesize")) {
                 OutClientHandler.setTypeAction(TypeAction.SEND_FILESIZE);
-                ctx.write(filesize);
+                ctx.write(filesizeUpload);
             } else if (command.equals("upload")) {
                 File fileToSend = new File(fullPathFile);
                 OutClientHandler.setTypeAction(TypeAction.UPLOAD);
@@ -96,6 +119,23 @@ public class InClientHandler extends ChannelInboundHandlerAdapter {
             } else if (command.equals("filenamesListServer")) {
                 Controller.setListFiles_str(command);
             }
+        }
+
+        if (typeAction == TypeAction.GET_FILESIZE_DOWNLOAD) {
+            filesizeUpload = byteBufIn.readInt();
+            OutClientHandler.setTypeAction(TypeAction.WAITING);
+            ctx.write("filesizeForDownloadReceived");
+            InClientHandler.setTypeAction(TypeAction.DOWNLOAD);
+        }
+        if (typeAction == TypeAction.DOWNLOAD) {
+            byte[] bytes = new byte[filesizeDownload];
+            File newFile = new File(fullFileNameDownload);
+            FileOutputStream fos = new FileOutputStream(newFile);
+            int b = 0;
+            while ((b = byteBufIn.readByte()) != -1) {
+                fos.write(b);
+            }
+            InClientHandler.setTypeAction(TypeAction.WAITING);
         }
     }
 

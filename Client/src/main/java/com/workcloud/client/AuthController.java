@@ -11,6 +11,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class AuthController implements Initializable {
+    private String login = "";
+    private String password = "";
 
     private Client client;
     @FXML
@@ -27,16 +29,15 @@ public class AuthController implements Initializable {
 
     public void signInAction(ActionEvent actionEvent) throws Exception {
         //Thread.sleep(5000);
-        String login = textFieldLogin.getText().trim();
-        String password = passwordField.getText().trim();
+        login = textFieldLogin.getText().trim();
+        password = passwordField.getText().trim();
         Client.getChannel().writeAndFlush("auth " + login + " " + password);
         //client.getChannel().writeAndFlush(login);
     }
 
     public void registrationAction(ActionEvent actionEvent) {
         //зарегистрировать нового пользователя
-        Client.getChannel().writeAndFlush("hi");
+        Client.getChannel().writeAndFlush("registration" + " " + login + " " + password);
     }
-
 
 }

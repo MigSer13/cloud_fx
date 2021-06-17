@@ -7,6 +7,7 @@ import io.netty.channel.ChannelPromise;
 
 import java.nio.charset.StandardCharsets;
 
+
 public class OutClientHandler extends ChannelOutboundHandlerAdapter {
     private static TypeAction typeAction = TypeAction.WAITING;
 

@@ -8,10 +8,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 
 public class Server {
@@ -73,7 +70,22 @@ public class Server {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    public static String addNewUser(String login, String password){
+        if(users.containsKey(login)) {
+            return "userExist";
+        }
+
+        try {
+            FileWriter fileWriter = new FileWriter(pathlistUsers, true);
+            fileWriter.write("\n" + login + " " + password);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        users.put(login, password);
+
+        return "registrationOK";
     }
 
 

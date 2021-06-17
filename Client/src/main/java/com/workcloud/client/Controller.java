@@ -1,6 +1,5 @@
 package com.workcloud.client;
 
-import com.workcloud.client.Client;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -85,7 +84,7 @@ public class Controller implements Initializable {
         if( !fileinfo.isDirectory()) {
             InClientHandler.setFileName(selectedFile);
             InClientHandler.setFullPathFile(fullPathSelectedFile);
-            InClientHandler.setFilesize(sizeSelectedFile);
+            InClientHandler.setFilesizeUpload(sizeSelectedFile);
             client.getChannel().write("upload");
         }else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "выберите файл, а не папку", ButtonType.OK);
@@ -95,8 +94,9 @@ public class Controller implements Initializable {
 
     public void toClientAction(ActionEvent actionEvent) {
         String selectedServerFile = listViewServer.getSelectionModel().getSelectedItem();
+        InClientHandler.setFileNameDownload(selectedPath + "/" + selectedServerFile);
         OutClientHandler.setTypeAction(TypeAction.SEND_4Bytes);
         client.getChannel().write("download" + " " + selectedServerFile);
-
+        InClientHandler.setTypeAction(TypeAction.GET_FILESIZE_DOWNLOAD);
     }
 }

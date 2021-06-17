@@ -5,6 +5,7 @@ public enum TypeAction {
     WAITING,
     UPLOAD,
     DOWNLOAD,
+    GET_FILESIZE_DOWNLOAD,
     SEND_4Bytes,
     SEND_FILESIZE
 }
