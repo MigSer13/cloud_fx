@@ -11,6 +11,8 @@ import javafx.scene.control.Button;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+
+import java.io.File;
 import java.io.IOException;
 
 public class InClientHandler extends ChannelInboundHandlerAdapter {
@@ -19,6 +21,21 @@ public class InClientHandler extends ChannelInboundHandlerAdapter {
     public Button buttonsignIn;
     private TypeAction typeAction = TypeAction.WAITING_AUTH;
     private Controller controller = null;
+    private static String fileName = "";
+    private static String fullPathFile = "";
+    private static int filesize = 0;
+
+    public static void setFilesize(int filesize) {
+        InClientHandler.filesize = filesize;
+    }
+
+    public static void setFullPathFile(String fullPathFile) {
+        InClientHandler.fullPathFile = fullPathFile;
+    }
+
+    public static void setFileName(String fileName) {
+        InClientHandler.fileName = fileName;
+    }
 
     public InClientHandler(Button buttonsignIn) {
         this.buttonsignIn = buttonsignIn;
@@ -53,47 +70,36 @@ public class InClientHandler extends ChannelInboundHandlerAdapter {
                         openWorkingWindow();
                     }
                 });
-            } else if(answerServer.equals("authNO")){
+            } else if (answerServer.equals("authNO")) {
                 System.out.println("Пароль неверный");
-            } else if(answerServer.equals("needRegister")){
+            } else if (answerServer.equals("needRegister")) {
                 System.out.println("Пользователь с таким логином не найден");
             }
         }
 
-        if (typeAction == TypeAction.WAITING || byteBufIn.readableBytes() == 1){
+        if (typeAction == TypeAction.WAITING) {
             StringBuilder stringBuilder = new StringBuilder();
             while (byteBufIn.readableBytes() > 0) {
                 stringBuilder.append((char) byteBufIn.readByte());
             }
             String command = stringBuilder.toString();
             if (command.equals("filename")) {
-
+                OutClientHandler.setTypeAction(TypeAction.SEND_4Bytes);
+                ctx.write(fileName);
+            } else if (command.equals("filesize")) {
+                OutClientHandler.setTypeAction(TypeAction.SEND_FILESIZE);
+                ctx.write(filesize);
+            } else if (command.equals("upload")) {
+                File fileToSend = new File(fullPathFile);
+                OutClientHandler.setTypeAction(TypeAction.UPLOAD);
+                ctx.write(fileToSend);
+            } else if (command.equals("filenamesListServer")) {
+                Controller.setListFiles_str(command);
             }
         }
-
-//        if ( !authok ) {
-//            ByteBuf buf = (ByteBuf) msg;
-//            StringBuilder stringBuilder = new StringBuilder();
-//            while (buf.readableBytes() > 0) {
-//                stringBuilder.append((char) buf.readByte());
-//            }
-//            String answerServer = stringBuilder.toString();
-////            if (answerServer.equals("authok")) {
-////                openWorkingWindow();
-////            }
-//            ctx.write(answerServer.getBytes(StandardCharsets.UTF_8));
-//        }
-    }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
-        ctx.close();
     }
 
     public void openWorkingWindow() {
-        //if( authok){
-        //currentWindow.hide();
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/client.fxml"));
         try {
@@ -108,7 +114,12 @@ public class InClientHandler extends ChannelInboundHandlerAdapter {
         stage.toFront();
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.showAndWait();
-        controller = (Controller)loader.getController();
-        //}
+        controller = (Controller) loader.getController();
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        cause.printStackTrace();
+        ctx.close();
     }
 }

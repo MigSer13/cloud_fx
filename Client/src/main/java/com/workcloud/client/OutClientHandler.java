@@ -1,6 +1,5 @@
 package com.workcloud.client;
 
-import com.workcloud.client.TypeAction;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
@@ -23,10 +22,15 @@ public class OutClientHandler extends ChannelOutboundHandlerAdapter {
             buf.writeBytes(s.getBytes(StandardCharsets.UTF_8));
             ctx.writeAndFlush(buf);
         }
-        if (typeAction == TypeAction.SEND_FILENAME) {
+        if (typeAction == TypeAction.SEND_4Bytes) {
             ByteBuf buf = ctx.alloc().directBuffer(4);
             String s = (String) msg;
             buf.writeBytes(s.getBytes(StandardCharsets.UTF_8));
+            ctx.writeAndFlush(buf);
+        }
+        if (typeAction == TypeAction.SEND_FILESIZE) {
+            ByteBuf buf = (ByteBuf) msg;
+            buf.writeBytes(buf);
             ctx.writeAndFlush(buf);
         }
         if (typeAction == TypeAction.UPLOAD) {
