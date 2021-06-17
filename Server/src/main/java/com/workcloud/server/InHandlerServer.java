@@ -60,6 +60,12 @@ public class InHandlerServer extends ChannelInboundHandlerAdapter {
                 String login = strAuth[1];
                 String password = strAuth[2];
                 String answerRegistration = Server.addNewUser(login, password);
+                if(answerRegistration.equals("registrationOK")){
+                    File newDirUser = new File(pathStorageFiles + "/" + "Files_"+login);
+                    if(newDirUser.mkdir()){
+                        dirUser = "Files_" + login;
+                    }
+                }
                 ctx.write(answerRegistration);
             }
         }
