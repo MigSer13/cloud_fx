@@ -1,4 +1,6 @@
+com\workcloud\client\TypeAction.class
+com\workcloud\client\InClientHandler$1.class
 com\workcloud\client\OutClientHandler.class
 com\workcloud\client\InClientHandler.class
-com\workcloud\client\Callback.class
-Controller.class
+com\workcloud\client\Controller.class
+com\workcloud\client\AuthController.class

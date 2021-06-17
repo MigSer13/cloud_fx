@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.181" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.workcloud.client.Controller">
    <children>
       <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #FFFACD; -fx-border-color: #778899;">
          <children>
@@ -38,7 +38,7 @@
                   <Button fx:id="toClient" mnemonicParsing="false" onAction="#toClientAction" prefHeight="50.0" prefWidth="50.0" text="&lt;" />
                </children>
             </VBox>
-            <ListView prefWidth="400.0" style="-fx-background-color: #B0E0E6; -fx-border-color: #778899;">
+            <ListView fx:id="listViewServer" prefWidth="400.0" style="-fx-background-color: #B0E0E6; -fx-border-color: #778899;">
                <cursor>
                   <Cursor fx:constant="DEFAULT" />
                </cursor>

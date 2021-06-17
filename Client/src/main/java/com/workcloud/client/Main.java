@@ -14,6 +14,7 @@ public class Main extends Application {
         primaryStage.setTitle("Storage");
         primaryStage.setScene(new Scene(root, 300, 150));
         primaryStage.show();
+
     }
 
 
